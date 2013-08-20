@@ -134,27 +134,31 @@ print """\
         <!--<name>Track1</name>-->
         <description>Long track</description>
         <styleUrl>#multiTrack</styleUrl>
-        <gx:Track>
+        <gx:MultiTrack>
 """
 
-times = []
-coords = []
 
-for wpt in dom.getElementsByTagName("trkpt"):
-    time = text(wpt.getElementsByTagName("time")[0])
-    lon = text(wpt.attributes["lon"])
-    lat = text(wpt.attributes["lat"])
-    times.append(time)
-    coords.append("%s %s 0" % (lon, lat))
+for seg in dom.getElementsByTagName("trkseg"):
+    print "<gx:Track>"
+    times = []
+    coords = []
+    for wpt in seg.getElementsByTagName("trkpt"):
+        time = text(wpt.getElementsByTagName("time")[0])
+        lon = text(wpt.attributes["lon"])
+        lat = text(wpt.attributes["lat"])
+        times.append(time)
+        coords.append("%s %s 0" % (lon, lat))
 
-for t in times:
-    print "<when>%s</when>" % t
+    for t in times:
+        print "<when>%s</when>" % t
 
-for c in coords:
-    print "<gx:coord>%s</gx:coord>" % c
+    for c in coords:
+        print "<gx:coord>%s</gx:coord>" % c
+
+    print "</gx:Track>"
 
 print """\
-        </gx:Track>
+        </gx:MultiTrack>
       </Placemark>
     </Folder>
 """
