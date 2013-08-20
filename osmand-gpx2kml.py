@@ -3,6 +3,9 @@ import sys
 import xml.dom.minidom
 
 
+TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0.png"
+#TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
+
 dom = xml.dom.minidom.parse(sys.argv[1])
 
 def text(n):
@@ -17,7 +20,7 @@ seen = {}
 
 print """\
 <?xml version="1.0" standalone="yes"?>
-<kml creator="osmand2kml" xmlns="http://earth.google.com/kml/2.0">
+<kml creator="osmand2kml" xmlns="http://earth.google.com/kml/2.0" xmlns:gx="http://www.google.com/kml/ext/2.2">
 <Document>
 <name><![CDATA[Sample File Name]]></name>
 <description><![CDATA[Sample File Description]]></description>
@@ -54,10 +57,47 @@ print """\
             </Pair>
         </StyleMap>
 
+
+<!-- Normal multiTrack style -->
+    <Style id="multiTrack_n">
+      <LineStyle>
+        <color>99ffac59</color>
+        <width>6</width>
+      </LineStyle>
+      <IconStyle>
+        <Icon>
+          <href>%(TRACK_ICON)s</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+<!-- Highlighted multiTrack style -->
+    <Style id="multiTrack_h">
+      <LineStyle>
+        <color>99ffac59</color>
+        <width>8</width>
+      </LineStyle>
+      <IconStyle>
+        <scale>1.2</scale>
+        <Icon>
+          <href>%(TRACK_ICON)s</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <StyleMap id="multiTrack">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#multiTrack_n</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#multiTrack_h</styleUrl>
+      </Pair>
+    </StyleMap>
+
 <Folder>
 <name><![CDATA[Multimedia Notes]]></name>
 <description><![CDATA[Photos, Audio & Video recorded during journey]]></description>
-"""
+""" % globals()
 
 for wpt in dom.getElementsByTagName("wpt"):
     name = text(wpt.getElementsByTagName("name")[0])
@@ -85,8 +125,41 @@ for wpt in dom.getElementsByTagName("wpt"):
 </Placemark>
 """ % locals()
 
+print "</Folder>"
+
 print """\
-</Folder>
+    <Folder>
+      <name>Tracks</name>
+      <Placemark>
+        <!--<name>Track1</name>-->
+        <description>Long track</description>
+        <styleUrl>#multiTrack</styleUrl>
+        <gx:Track>
+"""
+
+times = []
+coords = []
+
+for wpt in dom.getElementsByTagName("trkpt"):
+    time = text(wpt.getElementsByTagName("time")[0])
+    lon = text(wpt.attributes["lon"])
+    lat = text(wpt.attributes["lat"])
+    times.append(time)
+    coords.append("%s %s 0" % (lon, lat))
+
+for t in times:
+    print "<when>%s</when>" % t
+
+for c in coords:
+    print "<gx:coord>%s</gx:coord>" % c
+
+print """\
+        </gx:Track>
+      </Placemark>
+    </Folder>
+"""
+
+print """\
 </Document>
 </kml>
 """
