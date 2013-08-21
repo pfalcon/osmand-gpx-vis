@@ -132,6 +132,7 @@ print """\
         <description>Long track</description>
         <styleUrl>#track</styleUrl>
         <gx:MultiTrack>
+          <altitudeMode>clampToGround</altitudeMode>
 """
 
 
