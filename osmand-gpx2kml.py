@@ -25,74 +25,71 @@ print """\
 <name><![CDATA[Sample File Name]]></name>
 <description><![CDATA[Sample File Description]]></description>
 
-        <Style id="photo-icon-normal">
-                <IconStyle>
-                        <color>ff00aaff</color>
-                        <scale>0.75</scale>
-                        <Icon>
-                                <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
-                        </Icon>
-                        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-                </IconStyle>
-        </Style>
-        <Style id="photo-icon-hilite">
-                <IconStyle>
-                        <color>ff00aaff</color>
-                        <scale>1.2</scale>
-                        <Icon>
-                                <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
-                        </Icon>
-                        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-                </IconStyle>
-        </Style>
-
-        <StyleMap id="photo">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#photo-icon-normal</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#photo-icon-hilite</styleUrl>
-            </Pair>
-        </StyleMap>
-
-
-<!-- Normal multiTrack style -->
-    <Style id="multiTrack_n">
-      <LineStyle>
-        <color>99ffac59</color>
-        <width>6</width>
-      </LineStyle>
-      <IconStyle>
+<Style id="photo-normal">
+    <IconStyle>
+        <color>ff00aaff</color>
+        <scale>0.75</scale>
         <Icon>
-          <href>%(TRACK_ICON)s</href>
+            <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
         </Icon>
-      </IconStyle>
-    </Style>
-<!-- Highlighted multiTrack style -->
-    <Style id="multiTrack_h">
-      <LineStyle>
-        <color>99ffac59</color>
-        <width>8</width>
-      </LineStyle>
-      <IconStyle>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<Style id="photo-hilite">
+    <IconStyle>
+        <color>ff00aaff</color>
         <scale>1.2</scale>
         <Icon>
-          <href>%(TRACK_ICON)s</href>
+            <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
         </Icon>
-      </IconStyle>
-    </Style>
-    <StyleMap id="multiTrack">
-      <Pair>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<StyleMap id="photo">
+    <Pair>
         <key>normal</key>
-        <styleUrl>#multiTrack_n</styleUrl>
-      </Pair>
-      <Pair>
+        <styleUrl>#photo-normal</styleUrl>
+    </Pair>
+    <Pair>
         <key>highlight</key>
-        <styleUrl>#multiTrack_h</styleUrl>
-      </Pair>
-    </StyleMap>
+        <styleUrl>#photo-hilite</styleUrl>
+    </Pair>
+</StyleMap>
+
+
+<Style id="track-normal">
+    <LineStyle>
+        <color>99ffac59</color>
+        <width>6</width>
+    </LineStyle>
+    <IconStyle>
+        <Icon>
+            <href>%(TRACK_ICON)s</href>
+        </Icon>
+    </IconStyle>
+</Style>
+<Style id="track-hilite">
+    <LineStyle>
+        <color>99ffac59</color>
+        <width>8</width>
+    </LineStyle>
+    <IconStyle>
+        <scale>1.2</scale>
+        <Icon>
+            <href>%(TRACK_ICON)s</href>
+        </Icon>
+    </IconStyle>
+</Style>
+<StyleMap id="track">
+    <Pair>
+        <key>normal</key>
+        <styleUrl>#track-normal</styleUrl>
+    </Pair>
+    <Pair>
+        <key>highlight</key>
+        <styleUrl>#track-hilite</styleUrl>
+    </Pair>
+</StyleMap>
 
 <Folder>
 <name><![CDATA[Multimedia Notes]]></name>
@@ -133,7 +130,7 @@ print """\
       <Placemark>
         <!--<name>Track1</name>-->
         <description>Long track</description>
-        <styleUrl>#multiTrack</styleUrl>
+        <styleUrl>#track</styleUrl>
         <gx:MultiTrack>
 """
 
