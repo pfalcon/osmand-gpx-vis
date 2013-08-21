@@ -15,8 +15,12 @@ def text(n):
     return tn.data
 
 seen = {}
+#alt photo:
+#http://mw1.google.com/mw-earth-vectordb/smartmaps_icons/tourist_destination-15.png
 #video:
 #http://maps.google.com/mapfiles/kml/shapes/movies.png
+#audio:
+#http://maps.google.com/mapfiles/kml/shapes/phone.png
 
 print """\
 <?xml version="1.0" standalone="yes"?>
@@ -27,33 +31,40 @@ print """\
 
 <Style id="photo-normal">
     <IconStyle>
-        <color>ff00aaff</color>
-        <scale>0.75</scale>
-        <Icon>
-            <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
-        </Icon>
+        <color>ff00aaff</color><scale>0.75</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href></Icon>
         <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
     </IconStyle>
 </Style>
 <Style id="photo-hilite">
     <IconStyle>
-        <color>ff00aaff</color>
-        <scale>1.2</scale>
-        <Icon>
-            <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
-        </Icon>
+        <color>ff00aaff</color><scale>1.2</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href></Icon>
         <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
     </IconStyle>
 </Style>
 <StyleMap id="photo">
-    <Pair>
-        <key>normal</key>
-        <styleUrl>#photo-normal</styleUrl>
-    </Pair>
-    <Pair>
-        <key>highlight</key>
-        <styleUrl>#photo-hilite</styleUrl>
-    </Pair>
+    <Pair><key>normal</key><styleUrl>#photo-normal</styleUrl></Pair>
+    <Pair><key>highlight</key><styleUrl>#photo-hilite</styleUrl></Pair>
+</StyleMap>
+
+<Style id="video-normal">
+    <IconStyle>
+        <color>ff00aaff</color><scale>0.75</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/movies.png</href></Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<Style id="video-hilite">
+    <IconStyle>
+        <color>ff00aaff</color><scale>1.2</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/movies.png</href></Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<StyleMap id="video">
+    <Pair><key>normal</key><styleUrl>#video-normal</styleUrl></Pair>
+    <Pair><key>highlight</key><styleUrl>#video-hilite</styleUrl></Pair>
 </StyleMap>
 
 
@@ -105,11 +116,13 @@ for wpt in dom.getElementsByTagName("wpt"):
     time = text(wpt.getElementsByTagName("time")[0])
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
+    ext = name.rsplit(".", 1)[1]
+    style = {"jpg": "photo", "mp4": "video"}.get(ext, "photo")
     print """\
 <Placemark>
         <name><![CDATA[%(time)s]]></name>
         <Snippet maxLines="2"><![CDATA[%(lat)s, %(lon)s]]></Snippet>
-        <styleUrl>#photo</styleUrl>
+        <styleUrl>#%(style)s</styleUrl>
         <description><![CDATA[
             <img width="600" src="../avnotes/%(name)s"><br>
             <a href="http://localhost/avnotes/%(name)s">Full-size image</a>
