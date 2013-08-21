@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import os
 import xml.dom.minidom
 
 
@@ -66,6 +67,24 @@ print """\
     <Pair><key>normal</key><styleUrl>#video-normal</styleUrl></Pair>
     <Pair><key>highlight</key><styleUrl>#video-hilite</styleUrl></Pair>
 </StyleMap>
+<Style id="audio-normal">
+    <IconStyle>
+        <color>ff00aaff</color><scale>0.75</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/phone.png</href></Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<Style id="audio-hilite">
+    <IconStyle>
+        <color>ff00aaff</color><scale>1.2</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/phone.png</href></Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+</Style>
+<StyleMap id="audio">
+    <Pair><key>normal</key><styleUrl>#audio-normal</styleUrl></Pair>
+    <Pair><key>highlight</key><styleUrl>#audio-hilite</styleUrl></Pair>
+</StyleMap>
 
 
 <Style id="track-normal">
@@ -107,6 +126,20 @@ print """\
 <description><![CDATA[Photos, Audio & Video recorded during journey]]></description>
 """ % globals()
 
+
+def media_identify(fname):
+    ext = name.rsplit(".", 1)[1]
+    if ext == "jpg":
+        return "photo"
+
+    f = os.popen("avprobe " + fname + " 2>&1", "r")
+    lines = f.readlines()
+    lines = filter(lambda l: "Stream #" in l, lines)
+    lines = filter(lambda l: "Video:" in l, lines)
+    if len(lines) > 0:
+        return "video"
+    return "audio"
+
 for wpt in dom.getElementsByTagName("wpt"):
     name = text(wpt.getElementsByTagName("name")[0])
     if name in seen:
@@ -116,8 +149,7 @@ for wpt in dom.getElementsByTagName("wpt"):
     time = text(wpt.getElementsByTagName("time")[0])
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
-    ext = name.rsplit(".", 1)[1]
-    style = {"jpg": "photo", "mp4": "video"}.get(ext, "photo")
+    style = media_identify("../avnotes/" + name)
     print """\
 <Placemark>
         <name><![CDATA[%(time)s]]></name>
