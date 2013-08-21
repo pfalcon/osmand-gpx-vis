@@ -1,13 +1,31 @@
 #!/usr/bin/env python
 import sys
 import os
+import optparse
 import xml.dom.minidom
 
 
 TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0.png"
 #TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
 
-dom = xml.dom.minidom.parse(sys.argv[1])
+
+optparser = optparse.OptionParser(usage='%prog [options] <file.gpx>')
+optparser.add_option('', '--debug',
+        action="store_true",
+        help='Debug logging')
+optparser.add_option('-q', '--quiet',
+        action="store_true",
+        help='Quiet operation')
+optparser.add_option('--dropbox',
+        action="store_true",
+        help='Use Dropbox')
+
+(options, args) = optparser.parse_args()
+if len(args) != 1:
+    optparser.error("Wrong number of arguments.")
+
+
+dom = xml.dom.minidom.parse(args[0])
 
 def text(n):
     assert len(n.childNodes) == 1
