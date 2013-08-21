@@ -36,6 +36,9 @@ print """\
         <Icon><href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href></Icon>
         <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
     </IconStyle>
+    <LabelStyle>
+        <scale>0</scale>
+    </LabelStyle>
 </Style>
 <Style id="photo-hilite">
     <IconStyle>
@@ -55,6 +58,9 @@ print """\
         <Icon><href>http://maps.google.com/mapfiles/kml/shapes/movies.png</href></Icon>
         <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
     </IconStyle>
+    <LabelStyle>
+        <scale>0</scale>
+    </LabelStyle>
 </Style>
 <Style id="video-hilite">
     <IconStyle>
@@ -67,12 +73,16 @@ print """\
     <Pair><key>normal</key><styleUrl>#video-normal</styleUrl></Pair>
     <Pair><key>highlight</key><styleUrl>#video-hilite</styleUrl></Pair>
 </StyleMap>
+
 <Style id="audio-normal">
     <IconStyle>
         <color>ff00aaff</color><scale>0.75</scale>
         <Icon><href>http://maps.google.com/mapfiles/kml/shapes/phone.png</href></Icon>
         <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
     </IconStyle>
+    <LabelStyle>
+        <scale>0</scale>
+    </LabelStyle>
 </Style>
 <Style id="audio-hilite">
     <IconStyle>
