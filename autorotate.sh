@@ -8,4 +8,9 @@
 #
 # This requires "jhead" tool ("jhead" Debian package).
 
-jhead -autorot -ft *.jpg
+if [ $# != 1 ]; then
+    echo "Usage: $0 <dir>"
+    exit 1
+fi
+
+jhead -autorot -ft -se $1/*.jpg
