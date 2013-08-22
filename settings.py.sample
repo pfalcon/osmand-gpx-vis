@@ -1,0 +1,9 @@
+# Copy this file to settings.py and fill in/edit data
+
+# To create app key, go to https://www.dropbox.com/developers/apps/create
+# (select "Dropbox API app", "Files and ...", "All file types")
+DROPBOX_APP_KEY = ""
+DROPBOX_APP_SECRET = ""
+
+# Location within Dropbox where OsmAnd's "avnotes" folder stored
+DROPBOX_AVNOTES_DIR = "/osmand/avnotes"
