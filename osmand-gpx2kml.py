@@ -24,6 +24,10 @@ optparser.add_option('--dropbox',
 if len(args) != 1:
     optparser.error("Wrong number of arguments.")
 
+if options.dropbox:
+    import dp
+    dp.init()
+
 
 dom = xml.dom.minidom.parse(args[0])
 
@@ -178,14 +182,25 @@ for wpt in dom.getElementsByTagName("wpt"):
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
     style = media_identify("../avnotes/" + name)
+    preview_width = ""
+    if options.dropbox:
+        try:
+            fullsize_url, preview_url = dp.resolve_image(name)
+        except:
+            fullsize_url, preview_url = "", ""
+    else:
+        preview_url = "../avnotes/" + name
+        fullsize_url = "http://localhost/avnotes/" + name
+        preview_width = 'width="600"'
+
     print """\
 <Placemark>
         <name><![CDATA[%(time)s]]></name>
         <Snippet maxLines="2"><![CDATA[%(lat)s, %(lon)s]]></Snippet>
         <styleUrl>#%(style)s</styleUrl>
         <description><![CDATA[
-            <img width="600" src="../avnotes/%(name)s"><br>
-            <a href="http://localhost/avnotes/%(name)s">Full-size image</a>
+            <img %(preview_width)s src="%(preview_url)s"><br>
+            <a href="%(fullsize_url)s">Full-size image</a>
         ]]>
         </description>
         <Point>
