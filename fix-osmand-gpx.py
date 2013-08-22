@@ -53,6 +53,9 @@ def get_time_span(dom):
 def main():
     dom = xml.dom.minidom.parse(sys.argv[1])
     out = open(sys.argv[2], "wt")
+    mismatched = None
+    if len(sys.argv) > 3:
+        mismatched = open(sys.argv[3], "wt")
 
     min_time, max_time = get_time_span(dom)
 
@@ -93,9 +96,14 @@ def main():
     seen = {}
     for wpt in dom.getElementsByTagName("wpt"):
         name = text(wpt.getElementsByTagName("name")[0])
-        if name in images and name not in seen:
-            print >>out, " ", wpt.toxml()
-            seen[name] = True
+        if name in images:
+            if name not in seen:
+                print >>out, " ", wpt.toxml()
+                seen[name] = True
+        else:
+            if mismatched and name not in seen:
+                print >>mismatched, " ", wpt.toxml()
+                seen[name] = True
 
     print >>out, "</gpx>"
 
