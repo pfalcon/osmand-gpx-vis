@@ -2,7 +2,8 @@ This is intended to be set of tools to help to do reporting and visualizations
 of OsmAnd (http://osmand.net/) tracks, possibly with added Audio/Video/Picture
 notes.
 
-Requirements:
+= Requirements =
+
 1. Support well-known non-OpenSource tools:
 
 1.1. Allow to create KML file for import into Google Maps, so link to a user
@@ -22,3 +23,26 @@ on Internet connection availability.
 2.1. Use OpenStreetMap instead of Google Maps for mash-ups (see 1.1)
 2.2. Use JOSM/Marble/WorldWind/whatver instead of Google Earth.
 2.3. Support OwnCloud for media hosting.
+
+= Status =
+
+WIP, none of the requirements above supported completely, but kinda works.
+
+= How to use =
+
+(For all steps below, makes sure you keep originals as backup.)
+
+1. For real-world use, you will want to sync OsmAnd's tracks and avnotes
+dirs (/sdcard/osmand/tracks and /sdcard/osmand/avnotes) to your computer,
+and from it, to media hosting/sharing service. I use BtSync for the first
+step and Dropbox for second. YMMV, but so far only Dropbox is supported
+as hosting service. /osmand/avnotes is good path for avnotes dir in Dropbox.
+2. Suppose you have OsmAnd GPX track with embedded A/V notes.
+3. As of time of writing, OsmAnd produces "dirty" GPX files when
+A/V notes are used, with many unrelated notes and duplicated notes
+appearing in GPX. So, first step is to clean it up using fix-osmand-gpx.py
+4. You'll probably want to see portrait photos in proper orientation,
+so run autorotate.sh on avnotes/ dir.
+5. You can now run osmand-gpx2kml.py in various ways (--help) to produce
+KML file which you can open in Google Earth or import in Google Maps.
+
