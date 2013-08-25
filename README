@@ -43,7 +43,10 @@ A/V notes are used, with many unrelated notes and duplicated notes
 appearing in GPX. So, first step is to clean it up using fix-osmand-gpx.py
 4. You'll probably want to see portrait photos in proper orientation,
 so run autorotate.sh on avnotes/ dir.
-5. You can now run osmand-gpx2kml.py in various ways (--help) to produce
+5. Copy settings.py.sample to settings.py and edit it per your likes. To use
+Dropbox integration, you will need to register App and put it API key into
+this file (optional, can be done later).
+6. You can now run osmand-gpx2kml.py in various ways (--help) to produce
 KML file which you can open in Google Earth or import in Google Maps. You
 should run it from within osmand/tracks directory (so a/v note media files
 were accessible as ../avnotes/)
