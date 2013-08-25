@@ -4,6 +4,8 @@ import os
 import optparse
 import xml.dom.minidom
 
+from settings import *
+
 
 TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0.png"
 #TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
@@ -182,7 +184,6 @@ for wpt in dom.getElementsByTagName("wpt"):
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
     style = media_identify("../avnotes/" + name)
-    preview_width = ""
     if options.dropbox:
         try:
             fullsize_url, preview_url = dp.resolve_image(name)
@@ -191,7 +192,12 @@ for wpt in dom.getElementsByTagName("wpt"):
     else:
         preview_url = "../avnotes/" + name
         fullsize_url = "http://localhost/avnotes/" + name
-        preview_width = 'width="600"'
+
+    preview_dims = ""
+    if PREVIEW_WIDTH:
+        preview_dims = 'width="%s"' % PREVIEW_WIDTH
+    if PREVIEW_HEIGHT:
+        preview_dims += ' height="%s"' % PREVIEW_HEIGHT
 
     print """\
 <Placemark>
@@ -199,7 +205,7 @@ for wpt in dom.getElementsByTagName("wpt"):
         <Snippet maxLines="2"><![CDATA[%(lat)s, %(lon)s]]></Snippet>
         <styleUrl>#%(style)s</styleUrl>
         <description><![CDATA[
-            <img %(preview_width)s src="%(preview_url)s"><br>
+            <img %(preview_dims)s src="%(preview_url)s"><br>
             <a href="%(fullsize_url)s">Full-size image</a>
         ]]>
         </description>

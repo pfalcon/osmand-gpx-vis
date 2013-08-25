@@ -11,3 +11,11 @@ DROPBOX_AVNOTES_DIR = "/osmand/avnotes"
 # Preview image dimensions as requested from Dropbox. Only following
 # values are valid: 64x64, 128x128, 320x320, 640x480, 1024x768, 2048x1536
 DROPBOX_PREVIEW_SIZE = "640x480"
+
+# If both are None, preview image will be shown in original size (which is
+# DROPBOX_PREVIEW_SIZE for Dropbox images). If one is set (to numeric value),
+# image will be scaled for corresponding dimension to match the value. If
+# both are set, image will be scaled (possibly, non-proportionally) to this
+# dimensions.
+PREVIEW_WIDTH = None
+PREVIEW_HEIGHT = None
