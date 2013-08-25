@@ -71,18 +71,22 @@ def main():
     for fname in images.keys():
 #    print "Processing " + fname
         fullname = "../avnotes/" + fname
-        f = open(fullname)
-        tags = exifread.process_file(f)
-        if len(tags) == 0:
-            # Non-JPEG file, like mp3 or mp4
-            st = os.stat(fullname)
-            d = datetime.fromtimestamp(st[stat.ST_MTIME])
+        if os.path.exists(fullname):
+            f = open(fullname)
+            tags = exifread.process_file(f)
+            if len(tags) == 0:
+                # Non-JPEG file, like mp3 or mp4
+                st = os.stat(fullname)
+                d = datetime.fromtimestamp(st[stat.ST_MTIME])
+            else:
+                d = tags["Image DateTime"]
+                d = datetime.strptime(str(d), "%Y:%m:%d %H:%M:%S")
+            d = local2utc(d)
+#            print d
+            if d < min_time or d > max_time:
+                del images[fname]
         else:
-            d = tags["Image DateTime"]
-            d = datetime.strptime(str(d), "%Y:%m:%d %H:%M:%S")
-        d = local2utc(d)
-#    print d
-        if d < min_time or d > max_time:
+            print "Warning: %s doesn't exists, so removing its waypoint either" % fullname
             del images[fname]
 
     print "Total A/V waypoints belonging to the track:", len(images.keys())
