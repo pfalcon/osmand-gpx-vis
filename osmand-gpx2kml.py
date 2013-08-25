@@ -7,19 +7,16 @@ import xml.dom.minidom
 from settings import *
 
 
-optparser = optparse.OptionParser(usage='%prog [options] <file.gpx>')
-optparser.add_option('', '--debug',
-        action="store_true",
+optparser = optparse.OptionParser(usage='%prog [options] <input.gpx> <output.kml>')
+optparser.add_option('', '--debug', action="store_true",
         help='Debug logging')
-optparser.add_option('-q', '--quiet',
-        action="store_true",
+optparser.add_option('-q', '--quiet', action="store_true",
         help='Quiet operation')
-optparser.add_option('--dropbox',
-        action="store_true",
-        help='Use Dropbox')
+optparser.add_option('--dropbox', action="store_true",
+        help='Use Dropbox integration to reference (and share) media files')
 
 (options, args) = optparser.parse_args()
-if len(args) != 1:
+if len(args) != 2:
     optparser.error("Wrong number of arguments.")
 
 if options.dropbox:
@@ -28,6 +25,7 @@ if options.dropbox:
 
 
 dom = xml.dom.minidom.parse(args[0])
+out = open(args[1], "wt")
 
 def text(n):
     assert len(n.childNodes) == 1
@@ -43,7 +41,7 @@ seen = {}
 #audio:
 #http://maps.google.com/mapfiles/kml/shapes/phone.png
 
-print """\
+print >>out, """\
 <?xml version="1.0" standalone="yes"?>
 <kml creator="osmand2kml" xmlns="http://earth.google.com/kml/2.0" xmlns:gx="http://www.google.com/kml/ext/2.2">
 <Document>
@@ -195,7 +193,7 @@ for wpt in dom.getElementsByTagName("wpt"):
     if PREVIEW_HEIGHT:
         preview_dims += ' height="%s"' % PREVIEW_HEIGHT
 
-    print """\
+    print >>out, """\
 <Placemark>
         <name><![CDATA[%(time)s]]></name>
         <Snippet maxLines="2"><![CDATA[%(lat)s, %(lon)s]]></Snippet>
@@ -212,9 +210,9 @@ for wpt in dom.getElementsByTagName("wpt"):
 </Placemark>
 """ % locals()
 
-print "</Folder>"
+print >>out, "</Folder>"
 
-print """\
+print >>out, """\
     <Folder>
       <name>Tracks</name>
       <Placemark>
@@ -227,7 +225,7 @@ print """\
 
 
 for seg in dom.getElementsByTagName("trkseg"):
-    print "<gx:Track>"
+    print >>out, "<gx:Track>"
     times = []
     coords = []
     for wpt in seg.getElementsByTagName("trkpt"):
@@ -238,20 +236,20 @@ for seg in dom.getElementsByTagName("trkseg"):
         coords.append("%s %s 0" % (lon, lat))
 
     for t in times:
-        print "<when>%s</when>" % t
+        print >>out, "<when>%s</when>" % t
 
     for c in coords:
-        print "<gx:coord>%s</gx:coord>" % c
+        print >>out, "<gx:coord>%s</gx:coord>" % c
 
-    print "</gx:Track>"
+    print >>out, "</gx:Track>"
 
-print """\
+print >>out, """\
         </gx:MultiTrack>
       </Placemark>
     </Folder>
 """
 
-print """\
+print >>out, """\
 </Document>
 </kml>
 """
