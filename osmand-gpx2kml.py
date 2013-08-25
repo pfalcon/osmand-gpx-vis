@@ -7,10 +7,6 @@ import xml.dom.minidom
 from settings import *
 
 
-TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0.png"
-#TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
-
-
 optparser = optparse.OptionParser(usage='%prog [options] <file.gpx>')
 optparser.add_option('', '--debug',
         action="store_true",

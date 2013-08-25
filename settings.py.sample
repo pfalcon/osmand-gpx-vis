@@ -19,3 +19,10 @@ DROPBOX_PREVIEW_SIZE = "640x480"
 # dimensions.
 PREVIEW_WIDTH = None
 PREVIEW_HEIGHT = None
+
+# Icon to use for track, especially visible in tour mode. Default is standard
+# Google Earth arrow.
+TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0.png"
+# Motorcycle icon. Not really suitable for tour mode, as sometime it will appear
+# upside done, so that can be funny too.
+#TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
