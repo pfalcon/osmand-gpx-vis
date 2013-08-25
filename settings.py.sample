@@ -7,3 +7,7 @@ DROPBOX_APP_SECRET = ""
 
 # Location within Dropbox where OsmAnd's "avnotes" folder stored
 DROPBOX_AVNOTES_DIR = "/osmand/avnotes"
+
+# Preview image dimensions as requested from Dropbox. Only following
+# values are valid: 64x64, 128x128, 320x320, 640x480, 1024x768, 2048x1536
+DROPBOX_PREVIEW_SIZE = "640x480"

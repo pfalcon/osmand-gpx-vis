@@ -6,7 +6,6 @@ import re
 import dropbox
 from settings import *
 
-
 DIR = os.path.expanduser("~/.osmand2kml")
 DROPTOK = DIR + "/droptok"
 DROPCACHE = DIR + "/dropcache"
@@ -51,10 +50,15 @@ def init():
             fname, full, preview = l.rstrip().split(" ", 2)
             cache[fname] = (full, preview)
 
+def fix_preview_size(url, dim):
+    url = re.sub(r"/jpeg/\d+x\d+/", "/jpeg/%s/" % dim, url)
+    return url
 
 def resolve_image(fname):
     if fname in cache:
-        return cache[fname]
+        fullsize, preview = cache[fname]
+        preview = fix_preview_size(preview, DROPBOX_PREVIEW_SIZE)
+        return (fullsize, preview)
     shared = client.share(DROPBOX_AVNOTES_DIR + "/" + fname, short_url=False)
 #    print shared
     fullsize = shared["url"]
@@ -65,6 +69,7 @@ def resolve_image(fname):
 
     m = re.search(r'<meta content="(https://.+?)" property="og:image"', content)
     preview = m.group(1)
+    preview = fix_preview_size(preview, DROPBOX_PREVIEW_SIZE)
     f = open(DROPCACHE, "at")
     f.write("%s %s %s\n" % (fname, fullsize, preview))
     f.close()
