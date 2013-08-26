@@ -4,6 +4,7 @@ import os
 import optparse
 import xml.dom.minidom
 
+from points import *
 from settings import *
 
 
@@ -168,16 +169,27 @@ def media_identify(fname):
         return "video"
     return "audio"
 
+if CLUSTER_WAYPOINTS:
+    accum = PointCluster()
+else:
+    accum = []
+
 for wpt in dom.getElementsByTagName("wpt"):
     name = text(wpt.getElementsByTagName("name")[0])
     if name in seen:
         continue
     seen[name] = True
 
-    time = text(wpt.getElementsByTagName("time")[0])
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
-    style = media_identify("../avnotes/" + name)
+    p = Point(lon=lon, lat=lat)
+    accum.append(p)
+    props = {}
+    p.props = props
+    props["lon"] = lon
+    props["lat"] = lat
+    props["time"] = text(wpt.getElementsByTagName("time")[0])
+    props["style"] = media_identify("../avnotes/" + name)
     if options.dropbox:
         try:
             fullsize_url, preview_url = dp.resolve_image(name)
@@ -186,13 +198,17 @@ for wpt in dom.getElementsByTagName("wpt"):
     else:
         preview_url = "../avnotes/" + name
         fullsize_url = "http://localhost/avnotes/" + name
+    props["preview_url"] = preview_url
+    props["fullsize_url"] = fullsize_url
 
     preview_dims = ""
     if PREVIEW_WIDTH:
         preview_dims = 'width="%s"' % PREVIEW_WIDTH
     if PREVIEW_HEIGHT:
         preview_dims += ' height="%s"' % PREVIEW_HEIGHT
+    props["preview_dims"] = preview_dims
 
+for p in accum:
     print >>out, """\
 <Placemark>
         <name><![CDATA[%(time)s]]></name>
@@ -208,7 +224,7 @@ for wpt in dom.getElementsByTagName("wpt"):
                 <coordinates>%(lon)s,%(lat)s,0</coordinates>
         </Point>
 </Placemark>
-""" % locals()
+""" % p.props
 
 print >>out, "</Folder>"
 
