@@ -26,3 +26,8 @@ TRACK_ICON = "http://earth.google.com/images/kml-icons/track-directional/track-0
 # Motorcycle icon. Not really suitable for tour mode, as sometime it will appear
 # upside done, so that can be funny too.
 #TRACK_ICON = "http://maps.google.com/mapfiles/kml/shapes/motorcycling.png"
+
+# If several waypoints reside less than that degrees apart, cluser them together
+# This is useful for Google Maps, which don't allow to select specific one of
+# few closely residing placemarks. Set to 0 to disable (e.g. for Google Earth).
+CLUSTER_DISTANCE = 0.001

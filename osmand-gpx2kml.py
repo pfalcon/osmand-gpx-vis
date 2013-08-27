@@ -71,6 +71,21 @@ print >>out, """\
     <Pair><key>highlight</key><styleUrl>#photo-hilite</styleUrl></Pair>
 </StyleMap>
 
+<Style id="photo-multiple-normal">
+    <IconStyle>
+        <color>ff00aaff</color><scale>1</scale>
+        <Icon><href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href></Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+    </IconStyle>
+    <LabelStyle>
+        <scale>0.5</scale>
+    </LabelStyle>
+</Style>
+<StyleMap id="media-multiple">
+    <Pair><key>normal</key><styleUrl>#photo-multiple-normal</styleUrl></Pair>
+    <Pair><key>highlight</key><styleUrl>#photo-hilite</styleUrl></Pair>
+</StyleMap>
+
 <Style id="video-normal">
     <IconStyle>
         <color>ff00aaff</color><scale>0.75</scale>
@@ -169,7 +184,7 @@ def media_identify(fname):
         return "video"
     return "audio"
 
-if CLUSTER_WAYPOINTS:
+if CLUSTER_DISTANCE:
     accum = PointCluster()
 else:
     accum = []
@@ -182,13 +197,13 @@ for wpt in dom.getElementsByTagName("wpt"):
 
     lon = text(wpt.attributes["lon"])
     lat = text(wpt.attributes["lat"])
-    p = Point(lon=lon, lat=lat)
+    p = Point(lon=float(lon), lat=float(lat))
     accum.append(p)
     props = {}
     p.props = props
     props["lon"] = lon
     props["lat"] = lat
-    props["time"] = text(wpt.getElementsByTagName("time")[0])
+    props["name"] = text(wpt.getElementsByTagName("time")[0])
     props["style"] = media_identify("../avnotes/" + name)
     if options.dropbox:
         try:
@@ -208,15 +223,28 @@ for wpt in dom.getElementsByTagName("wpt"):
         preview_dims += ' height="%s"' % PREVIEW_HEIGHT
     props["preview_dims"] = preview_dims
 
-for p in accum:
+cnt = 0
+for wayp in accum:
+    if len(wayp.cluster) > 0:
+        wayp.props["style"] = "media-multiple"
+        wayp.props["name"] = len(wayp.cluster) + 1
+        pts = [wayp] + wayp.cluster
+    else:
+        pts = [wayp]
+    content = ""
+    for p in pts:
+        content += """\
+            <a href="%(fullsize_url)s"><img %(preview_dims)s src="%(preview_url)s"></a><br /><br />
+        """ % p.props
+    wayp.props["descr"] = content
+
     print >>out, """\
 <Placemark>
-        <name><![CDATA[%(time)s]]></name>
+        <name><![CDATA[%(name)s]]></name>
         <Snippet maxLines="2"><![CDATA[%(lat)s, %(lon)s]]></Snippet>
         <styleUrl>#%(style)s</styleUrl>
         <description><![CDATA[
-            <img %(preview_dims)s src="%(preview_url)s"><br>
-            <a href="%(fullsize_url)s">Full-size image</a>
+            %(descr)s
         ]]>
         </description>
         <Point>
@@ -224,7 +252,10 @@ for p in accum:
                 <coordinates>%(lon)s,%(lat)s,0</coordinates>
         </Point>
 </Placemark>
-""" % p.props
+""" % wayp.props
+    cnt += 1
+
+print "Output %d waypoints" % cnt
 
 print >>out, "</Folder>"
 
